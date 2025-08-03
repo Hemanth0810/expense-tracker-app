@@ -1,0 +1,717 @@
+/* Dark Theme Variables */
+:root {
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --bg-card: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --accent-primary: #6366f1;
+    --accent-secondary: #8b5cf6;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --border-color: #404040;
+}
+
+/* Base Styles */
+body {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1a2e 100%);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    transition: all 0.3s ease;
+}
+
+/* Navigation */
+.navbar-dark {
+    background: rgba(30, 30, 30, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border-radius: 20px;
+    margin: 2rem 0;
+}
+
+/* Feature Cards */
+.feature-card {
+    background: var(--bg-card);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+}
+
+.feature-icon {
+    color: var(--accent-primary);
+    font-size: 3rem;
+}
+
+/* Auth Cards */
+.auth-card {
+    background: var(--bg-card);
+    padding: 2.5rem;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced login page text visibility */
+.auth-card .text-muted {
+    color: #e5e7eb !important;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.auth-card a {
+    color: #60a5fa !important;
+    font-weight: 600;
+    text-decoration: none !important;
+}
+
+.auth-card a:hover {
+    color: #3b82f6 !important;
+    text-decoration: underline !important;
+}
+
+.auth-card p {
+    color: #f3f4f6 !important;
+}
+
+.auth-card .form-text {
+    color: #d1d5db !important;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+    background: var(--bg-card);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.card-header {
+    background: rgba(99, 102, 241, 0.1);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Enhanced welcome message visibility */
+.dashboard-welcome {
+    background: rgba(45, 45, 45, 0.8) !important;
+    padding: 1.5rem;
+    border-radius: 15px;
+    border: 1px solid #404040;
+}
+
+.dashboard-welcome h1 {
+    color: #ffffff !important;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-welcome p {
+    color: #e5e7eb !important;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.dashboard-welcome .text-info {
+    color: #60a5fa !important;
+    font-weight: 600;
+}
+
+/* Stat Cards */
+.stat-card {
+    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    opacity: 0.8;
+}
+
+.stat-content h3 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.stat-content p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* Transaction List */
+.transaction-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+    gap: 1rem;
+}
+
+.transaction-item:last-child {
+    border-bottom: none;
+}
+
+.transaction-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.transaction-details {
+    flex: 1;
+}
+
+.transaction-title {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.transaction-meta {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.transaction-amount {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+/* Action buttons styling */
+.btn-group .btn {
+    transition: all 0.2s ease;
+    margin: 0 2px;
+}
+
+.btn-group .btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-outline-warning {
+    border-color: #f59e0b;
+    color: #f59e0b;
+}
+
+.btn-outline-warning:hover {
+    background-color: #f59e0b;
+    border-color: #f59e0b;
+    color: #ffffff;
+}
+
+.btn-outline-danger {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.btn-outline-danger:hover {
+    background-color: #ef4444;
+    border-color: #ef4444;
+    color: #ffffff;
+}
+
+/* Table row hover effect */
+.table-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Delete confirmation styling */
+#deleteExpenseName {
+    background: rgba(245, 158, 11, 0.2);
+    padding: 0.5rem;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 0.5rem 0;
+}
+
+/* Forms */
+.form-control {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 10px;
+}
+
+.form-control:focus {
+    background: var(--bg-secondary);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+    color: var(--text-primary);
+}
+
+/* === PLACEHOLDER STYLES ADDED HERE === */
+.form-control::placeholder {
+    color: var(--text-secondary);
+    opacity: 1; /* For Firefox */
+}
+
+.form-control:-ms-input-placeholder {
+    color: var(--text-secondary);
+}
+
+.form-control::-ms-input-placeholder {
+    color: var(--text-secondary);
+}
+/* === END OF ADDED STYLES === */
+
+.form-select {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 10px;
+}
+
+.form-select:focus {
+    background: var(--bg-secondary);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+    color: var(--text-primary);
+}
+
+.input-group-text {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--accent-primary);
+    color: var(--accent-primary);
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+.btn-outline-light {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-primary);
+    border-radius: 10px;
+}
+
+/* Tables */
+.table-dark {
+    --bs-table-bg: transparent;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.05);
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.075);
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* Badges */
+.badge {
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+}
+
+/* Modal */
+.modal-content {
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-color);
+}
+
+/* Alerts */
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+/* Theme Toggle Button */
+#themeToggle {
+    transition: all 0.3s ease;
+}
+
+#themeToggle:hover {
+    transform: scale(1.05);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-secondary);
+}
+
+/* ============================== */
+/* LIGHT MODE STYLES */
+/* ============================== */
+
+/* Light Mode Styles */
+body.light-mode {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    color: #1a202c !important;
+}
+
+/* Light Mode Variables */
+body.light-mode {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-card: #ffffff;
+    --text-primary: #1a202c;
+    --text-secondary: #4a5568;
+    --accent-primary: #6366f1;
+    --accent-secondary: #8b5cf6;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --border-color: #e2e8f0;
+}
+
+/* Light Mode Navigation */
+body.light-mode .navbar-dark {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+body.light-mode .navbar-brand,
+body.light-mode .nav-link,
+body.light-mode .dropdown-toggle {
+    color: #1a202c !important;
+}
+
+body.light-mode .navbar-toggler {
+    border-color: #1a202c;
+}
+
+body.light-mode .dropdown-menu {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+body.light-mode .dropdown-item {
+    color: #1a202c;
+}
+
+body.light-mode .dropdown-item:hover {
+    background: #f8fafc;
+}
+
+/* Light Mode Cards */
+body.light-mode .dashboard-card,
+body.light-mode .feature-card,
+body.light-mode .auth-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.light-mode .card-header {
+    background: rgba(99, 102, 241, 0.05) !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    color: #1a202c !important;
+}
+
+/* Light Mode Dashboard Welcome */
+body.light-mode .dashboard-welcome {
+    background: #ffffff !important;
+    border: 2px solid #6366f1 !important;
+}
+
+body.light-mode .dashboard-welcome h1 {
+    color: #1a202c !important;
+}
+
+body.light-mode .dashboard-welcome p {
+    color: #4a5568 !important;
+}
+
+body.light-mode .dashboard-welcome .text-info {
+    color: #6366f1 !important;
+}
+
+/* Light Mode Auth Text */
+body.light-mode .auth-card .text-muted {
+    color: #4a5568 !important;
+}
+
+body.light-mode .auth-card p {
+    color: #1a202c !important;
+}
+
+body.light-mode .auth-card .text-light {
+    color: #1a202c !important;
+}
+
+body.light-mode .auth-card .form-text {
+    color: #6b7280 !important;
+}
+
+/* Light Mode Forms */
+body.light-mode .form-control,
+body.light-mode .form-select {
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    color: #1a202c !important;
+}
+
+body.light-mode .form-control:focus,
+body.light-mode .form-select:focus {
+    background: #ffffff !important;
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important;
+    color: #1a202c !important;
+}
+
+body.light-mode .input-group-text {
+    background: #f8fafc !important;
+    border: 1px solid #d1d5db !important;
+    color: #4a5568 !important;
+}
+
+/* Light Mode Tables */
+body.light-mode .table-dark {
+    --bs-table-bg: #ffffff;
+    --bs-table-striped-bg: #f8fafc;
+    --bs-table-hover-bg: #f1f5f9;
+    color: #1a202c !important;
+}
+
+body.light-mode .table th {
+    color: #4a5568 !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+}
+
+body.light-mode .table td {
+    border-top: 1px solid #e2e8f0 !important;
+    color: #1a202c !important;
+}
+
+/* Light Mode Buttons */
+body.light-mode .btn-outline-warning {
+    border-color: #f59e0b !important;
+    color: #f59e0b !important;
+}
+
+body.light-mode .btn-outline-danger {
+    border-color: #ef4444 !important;
+    color: #ef4444 !important;
+}
+
+body.light-mode .btn-secondary {
+    background: #6b7280 !important;
+    border-color: #6b7280 !important;
+}
+
+/* Light Mode Modals */
+body.light-mode .modal-content {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1a202c !important;
+}
+
+body.light-mode .modal-header {
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+body.light-mode .modal-footer {
+    border-top: 1px solid #e2e8f0 !important;
+}
+
+body.light-mode .btn-close {
+    filter: invert(1);
+}
+
+/* Light Mode Transaction Items */
+body.light-mode .transaction-item {
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+body.light-mode .transaction-title {
+    color: #1a202c !important;
+}
+
+body.light-mode .transaction-meta {
+    color: #6b7280 !important;
+}
+
+body.light-mode .transaction-amount {
+    color: #1a202c !important;
+}
+
+/* Light Mode Alerts */
+body.light-mode .alert-success {
+    background: #d1fae5 !important;
+    color: #065f46 !important;
+    border-color: #a7f3d0 !important;
+}
+
+body.light-mode .alert-danger {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    border-color: #fecaca !important;
+}
+
+body.light-mode .alert-info {
+    background: #dbeafe !important;
+    color: #1e40af !important;
+    border-color: #93c5fd !important;
+}
+
+/* Light Mode Text Colors */
+body.light-mode .text-light {
+    color: #1a202c !important;
+}
+
+body.light-mode .text-muted {
+    color: #6b7280 !important;
+}
+
+body.light-mode .text-white-50 {
+    color: #4a5568 !important;
+}
+
+body.light-mode h1,
+body.light-mode h2,
+body.light-mode h3,
+body.light-mode h4,
+body.light-mode h5 {
+    color: #1a202c !important;
+}
+
+/* Light Mode Theme Toggle Button */
+body.light-mode #themeToggle {
+    border-color: #1a202c !important;
+    color: #1a202c !important;
+}
+
+body.light-mode #themeToggle:hover {
+    background: #1a202c !important;
+    color: #ffffff !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-section {
+        margin: 1rem 0;
+        padding: 3rem 0 !important;
+    }
+    
+    .display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+    
+    .auth-card {
+        padding: 2rem;
+        margin: 1rem;
+    }
+    
+    .dashboard-welcome h1 {
+        font-size: 1.5rem;
+    }
+    .dashboard-welcome p {
+        font-size: 0.9rem;
+    }
+    
+    #themeText {
+        display: none;
+    }
+}
+
+/* === CHART LEGEND FIX FOR LIGHT MODE === */
+/* Chart Legend Fix for Light Mode */
+body.light-mode .chart-legend li span,
+body.light-mode .apexcharts-legend-text {
+    color: var(--text-secondary) !important;
+}
+body.light-mode .card-body span {
+    color: var(--text-secondary) !important;
+}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <div class="dashboard-welcome bg-dark p-3 rounded">
+            <h1 class="text-white mb-2">
+                <i class="fas fa-chart-line me-2 text-primary"></i>Dashboard
+            </h1>
+            <p class="text-white-50 mb-0 fs-5">
+                Welcome back, <strong class="text-info">{{ current_user.username }}</strong>!
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-4 mb-5">
+    <div class="col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="stat-content">
+                <h3>${{ "%.2f"|format(monthly_total) }}</h3>
+                <p>This Month</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-chart-pie"></i>
+            </div>
+            <div class="stat-content">
+                <h3>${{ "%.2f"|format(total_expenses) }}</h3>
+                <p>Total Expenses</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Chart Section -->
+    <div class="col-lg-8">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-bar me-2"></i>Expenses by Category</h5>
+            </div>
+            <div class="card-body">
+                {% if category_expenses %}
+                    <canvas id="expenseChart" width="400" height="200"></canvas>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                        <p class="text-ligth">No expenses this month yet.</p>
+                        <a href="{{ url_for('expenses') }}" class="btn btn-primary">Add Your First Expense</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Transactions -->
+    <div class="col-lg-4">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5><i class="fas fa-clock me-2"></i>Recent Transactions</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_expenses %}
+                    <div class="transaction-list">
+                        {% for expense in recent_expenses %}
+                        <div class="transaction-item">
+                            <div class="transaction-icon">
+                                {% if expense.category == 'Food' %}
+                                    <i class="fas fa-utensils"></i>
+                                {% elif expense.category == 'Transport' %}
+                                    <i class="fas fa-car"></i>
+                                {% elif expense.category == 'Shopping' %}
+                                    <i class="fas fa-shopping-bag"></i>
+                                {% elif expense.category == 'Entertainment' %}
+                                    <i class="fas fa-film"></i>
+                                {% elif expense.category == 'Health' %}
+                                    <i class="fas fa-heartbeat"></i>
+                                {% else %}
+                                    <i class="fas fa-dollar-sign"></i>
+                                {% endif %}
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-title">{{ expense.description }}</div>
+                                <div class="transaction-meta">{{ expense.category }} • {{ expense.date.strftime('%m/%d') }}</div>
+                            </div>
+                            <div class="transaction-amount">
+                                ${{ "%.2f"|format(expense.amount) }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('expenses') }}" class="btn btn-outline-primary btn-sm">View All</a>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-receipt fa-2x text-muted mb-3"></i>
+                        <p class="text-muted">No transactions yet.</p>
+                        <a href="{{ url_for('expenses') }}" class="btn btn-primary btn-sm">Add Expense</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
