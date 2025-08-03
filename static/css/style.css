@@ -715,3 +715,117 @@ body.light-mode .apexcharts-legend-text {
 body.light-mode .card-body span {
     color: var(--text-secondary) !important;
 }
+/* ADD THESE ADMIN STYLES AT THE END OF YOUR EXISTING CSS FILE */
+
+/* Admin Dashboard Styles */
+.admin-stat-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.admin-stat-card.users {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.admin-stat-card.logins {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.admin-stat-card.failed {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.admin-stat-card.expenses {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.admin-stat-card:hover {
+    transform: translateY(-3px);
+}
+
+.admin-table th {
+    background: rgba(99, 102, 241, 0.1);
+    border: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.user-info strong {
+    color: #60a5fa;
+}
+
+.datetime-info strong {
+    color: #ffffff;
+}
+
+.ip-address {
+    background: rgba(99, 102, 241, 0.2);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.device-info {
+    font-size: 0.9rem;
+}
+
+.user-stats-list,
+.suspicious-activity-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.user-stat-item,
+.suspicious-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.user-stat-item:last-child,
+.suspicious-item:last-child {
+    border-bottom: none;
+}
+
+.suspicious-item {
+    background: rgba(239, 68, 68, 0.1);
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Light mode admin styles */
+body.light-mode .admin-table th {
+    background: rgba(99, 102, 241, 0.05);
+    color: #4a5568;
+}
+
+body.light-mode .user-info strong {
+    color: #6366f1;
+}
+
+body.light-mode .datetime-info strong {
+    color: #1a202c;
+}
+
+body.light-mode .ip-address {
+    background: rgba(99, 102, 241, 0.1);
+    color: #1a202c;
+}
+
+body.light-mode .suspicious-item {
+    background: rgba(239, 68, 68, 0.05);
+    border-color: rgba(239, 68, 68, 0.1);
+}

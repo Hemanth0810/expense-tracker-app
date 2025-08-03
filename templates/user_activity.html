@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Login Activity - Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="text-light">
+            <i class="fas fa-history me-2"></i>Login Activity
+        </h1>
+        <p class="text-muted">Your account security and login history</p>
+    </div>
+</div>
+
+<!-- Activity Statistics -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-sign-in-alt"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_logins }}</h3>
+                <p>Total Logins</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ failed_attempts }}</h3>
+                <p>Failed Attempts</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ avg_duration }}min</h3>
+                <p>Avg Session</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Login History -->
+<div class="dashboard-card">
+    <div class="card-header">
+        <h5><i class="fas fa-list me-2"></i>Recent Login History</h5>
+    </div>
+    <div class="card-body">
+        {% if login_logs %}
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th>IP Address</th>
+                            <th>Device/Browser</th>
+                            <th>Session Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in login_logs %}
+                        <tr>
+                            <td>{{ log.login_time.strftime('%m/%d/%Y %I:%M %p') if log.login_time else 'N/A' }}</td>
+                            <td>
+                                {% if log.login_successful %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle me-1"></i>Success
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-times-circle me-1"></i>Failed
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <code>{{ log.ip_address or 'Unknown' }}</code>
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    {% if log.user_agent %}
+                                        {% if 'Chrome' in log.user_agent %}
+                                            <i class="fab fa-chrome text-warning"></i> Chrome
+                                        {% elif 'Firefox' in log.user_agent %}
+                                            <i class="fab fa-firefox text-orange"></i> Firefox
+                                        {% elif 'Safari' in log.user_agent %}
+                                            <i class="fab fa-safari text-info"></i> Safari
+                                        {% elif 'Edge' in log.user_agent %}
+                                            <i class="fab fa-edge text-primary"></i> Edge
+                                        {% else %}
+                                            <i class="fas fa-globe"></i> Other
+                                        {% endif %}
+                                        
+                                        {% if 'Mobile' in log.user_agent or 'Android' in log.user_agent or 'iPhone' in log.user_agent %}
+                                            <i class="fas fa-mobile-alt ms-1"></i>
+                                        {% else %}
+                                            <i class="fas fa-desktop ms-1"></i>
+                                        {% endif %}
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
+                                </small>
+                            </td>
+                            <td>
+                                {% if log.session_duration %}
+                                    {{ log.session_duration }} minutes
+                                {% elif log.logout_time %}
+                                    <span class="text-muted">Calculated</span>
+                                {% else %}
+                                    <span class="badge bg-info">Active</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                <h4>No login history found</h4>
+                <p class="text-muted">Your login activity will appear here.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+    </a>
+</div>
+{% endblock %}

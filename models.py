@@ -25,3 +25,19 @@ class Expense(db.Model):
     
     def __repr__(self):
         return f'<Expense {self.description}: ${self.amount}>'
+
+class UserLoginLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    login_time = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    ip_address = db.Column(db.String(45), nullable=True)  # Supports IPv6
+    user_agent = db.Column(db.Text, nullable=True)  # Browser/device info
+    login_successful = db.Column(db.Boolean, default=True, nullable=False)
+    logout_time = db.Column(db.DateTime, nullable=True)
+    session_duration = db.Column(db.Integer, nullable=True)  # Duration in minutes
+    
+    # Relationship to User
+    user = db.relationship('User', backref=db.backref('login_logs', lazy=True, cascade='all, delete-orphan'))
+    
+    def __repr__(self):
+        return f'<LoginLog {self.user.username} at {self.login_time}>'

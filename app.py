@@ -1,11 +1,11 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 from sqlalchemy import func, extract, desc
 from extensions import db, login_manager
-from models import User, Expense
+from models import User, Expense, UserLoginLog
 
 def create_app():
     app = Flask(__name__)
@@ -90,13 +90,44 @@ def create_app():
             username = request.form['username']
             password = request.form['password']
             
+            # Get client information
+            ip_address = request.environ.get('HTTP_X_FORWARDED_FOR') or request.environ.get('REMOTE_ADDR')
+            user_agent = request.headers.get('User-Agent')
+            
             user = User.query.filter_by(username=username).first()
             
             if user and check_password_hash(user.password_hash, password):
+                # Successful login
                 login_user(user)
+                
+                # Log successful login
+                login_log = UserLoginLog(
+                    user_id=user.id,
+                    ip_address=ip_address,
+                    user_agent=user_agent,
+                    login_successful=True
+                )
+                db.session.add(login_log)
+                db.session.commit()
+                
+                # Store login log ID in session for logout tracking
+                session['current_login_log_id'] = login_log.id
+                
                 next_page = request.args.get('next')
+                flash(f'Welcome back, {user.username}!', 'success')
                 return redirect(next_page) if next_page else redirect(url_for('dashboard'))
             else:
+                # Failed login attempt
+                if user:  # User exists but wrong password
+                    failed_log = UserLoginLog(
+                        user_id=user.id,
+                        ip_address=ip_address,
+                        user_agent=user_agent,
+                        login_successful=False
+                    )
+                    db.session.add(failed_log)
+                    db.session.commit()
+                
                 flash('Invalid username or password.', 'danger')
         
         return render_template('login.html')
@@ -104,6 +135,18 @@ def create_app():
     @app.route('/logout')
     @login_required
     def logout():
+        # Track logout time and session duration
+        if 'current_login_log_id' in session:
+            login_log = UserLoginLog.query.get(session['current_login_log_id'])
+            if login_log:
+                login_log.logout_time = datetime.utcnow()
+                # Calculate session duration in minutes
+                duration = (login_log.logout_time - login_log.login_time).total_seconds() / 60
+                login_log.session_duration = int(duration)
+                db.session.commit()
+            
+            session.pop('current_login_log_id', None)
+        
         logout_user()
         flash('You have been logged out.', 'info')
         return redirect(url_for('index'))
@@ -230,6 +273,111 @@ def create_app():
         db.session.commit()
         flash('Expense deleted successfully!', 'success')
         return redirect(url_for('expenses'))
+    
+    # User activity route
+    @app.route('/profile/activity')
+    @login_required
+    def user_activity():
+        # Get user's login history (last 50 logins)
+        login_logs = UserLoginLog.query.filter_by(user_id=current_user.id)\
+            .order_by(desc(UserLoginLog.login_time)).limit(50).all()
+        
+        # Calculate some statistics
+        total_logins = UserLoginLog.query.filter_by(
+            user_id=current_user.id, 
+            login_successful=True
+        ).count()
+        
+        failed_attempts = UserLoginLog.query.filter_by(
+            user_id=current_user.id, 
+            login_successful=False
+        ).count()
+        
+        # Average session duration
+        avg_duration = db.session.query(func.avg(UserLoginLog.session_duration))\
+            .filter_by(user_id=current_user.id)\
+            .filter(UserLoginLog.session_duration.isnot(None)).scalar()
+        
+        return render_template('user_activity.html',
+                             login_logs=login_logs,
+                             total_logins=total_logins,
+                             failed_attempts=failed_attempts,
+                             avg_duration=int(avg_duration) if avg_duration else 0)
+    
+    # Admin dashboard route
+    @app.route('/admin/dashboard')
+    @login_required
+    def admin_dashboard():
+        # Admin access control - only allow specific admin users
+        if current_user.username != 'admin':  # Change 'admin' to your admin username
+            flash('Access denied. Admin privileges required.', 'danger')
+            return redirect(url_for('dashboard'))
+        
+        # Get user statistics
+        total_users = User.query.count()
+        total_expenses = Expense.query.count()
+        total_amount = db.session.query(func.sum(Expense.amount)).scalar() or 0
+        
+        # Get login statistics
+        total_logins = UserLoginLog.query.filter_by(login_successful=True).count()
+        failed_logins = UserLoginLog.query.filter_by(login_successful=False).count()
+        
+        # Get recent login activity (last 50 logins)
+        recent_logins = UserLoginLog.query.join(User)\
+            .order_by(desc(UserLoginLog.login_time))\
+            .limit(50).all()
+        
+        # Get users with most login activity
+        user_login_stats = db.session.query(
+            User.username,
+            func.count(UserLoginLog.id).label('login_count'),
+            func.max(UserLoginLog.login_time).label('last_login')
+        ).join(UserLoginLog)\
+         .filter(UserLoginLog.login_successful == True)\
+         .group_by(User.id, User.username)\
+         .order_by(desc('login_count'))\
+         .limit(10).all()
+        
+        # Get suspicious activity (failed logins in last 24 hours)
+        yesterday = datetime.utcnow() - timedelta(days=1)
+        suspicious_activity = UserLoginLog.query.join(User)\
+            .filter(UserLoginLog.login_successful == False)\
+            .filter(UserLoginLog.login_time >= yesterday)\
+            .order_by(desc(UserLoginLog.login_time))\
+            .all()
+        
+        return render_template('admin_dashboard.html',
+                             total_users=total_users,
+                             total_expenses=total_expenses,
+                             total_amount=total_amount,
+                             total_logins=total_logins,
+                             failed_logins=failed_logins,
+                             recent_logins=recent_logins,
+                             user_login_stats=user_login_stats,
+                             suspicious_activity=suspicious_activity)
+    
+    # Admin users route
+    @app.route('/admin/users')
+    @login_required
+    def admin_users():
+        # Simple admin check
+        if current_user.username != 'admin':
+            flash('Access denied. Admin privileges required.', 'danger')
+            return redirect(url_for('dashboard'))
+        
+        # Get all users with their expense counts
+        users_with_stats = db.session.query(User).outerjoin(Expense).group_by(User.id).all()
+        
+        # Get total statistics
+        total_users = User.query.count()
+        total_expenses = Expense.query.count()
+        total_amount = db.session.query(func.sum(Expense.amount)).scalar() or 0
+        
+        return render_template('admin_users.html', 
+                             users=users_with_stats,
+                             total_users=total_users,
+                             total_expenses=total_expenses,
+                             total_amount=total_amount)
     
     @app.route('/api/chart-data')
     @login_required

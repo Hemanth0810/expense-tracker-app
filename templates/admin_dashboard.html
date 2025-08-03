@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Login Monitoring{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="text-light">
+            <i class="fas fa-shield-alt me-2"></i>Admin Dashboard
+        </h1>
+        <p class="text-muted">System monitoring and user activity overview</p>
+    </div>
+</div>
+
+<!-- System Statistics -->
+<div class="row g-4 mb-5">
+    <div class="col-md-3">
+        <div class="admin-stat-card users">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_users }}</h3>
+                <p>Total Users</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="admin-stat-card logins">
+            <div class="stat-icon">
+                <i class="fas fa-sign-in-alt"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_logins }}</h3>
+                <p>Successful Logins</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="admin-stat-card failed">
+            <div class="stat-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ failed_logins }}</h3>
+                <p>Failed Attempts</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="admin-stat-card expenses">
+            <div class="stat-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-content">
+                <h3>${{ "%.0f"|format(total_amount) }}</h3>
+                <p>Total Expenses</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Login Activity -->
+<div class="dashboard-card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5><i class="fas fa-clock me-2"></i>Recent Login Activity</h5>
+        <span class="badge bg-primary">Last 50 Logins</span>
+    </div>
+    <div class="card-body">
+        {% if recent_logins %}
+            <div class="table-responsive">
+                <table class="table table-dark table-hover admin-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th>IP Address</th>
+                            <th>Device Info</th>
+                            <th>Session Duration</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in recent_logins %}
+                        <tr class="{{ 'table-danger' if not log.login_successful else '' }}">
+                            <td>
+                                <div class="user-info">
+                                    <strong>{{ log.user.username }}</strong>
+                                    <small class="text-muted d-block">{{ log.user.email }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="datetime-info">
+                                    <strong>{{ log.login_time.strftime('%m/%d/%Y') if log.login_time else 'N/A' }}</strong>
+                                    <small class="text-muted d-block">{{ log.login_time.strftime('%I:%M %p') if log.login_time else 'N/A' }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                {% if log.login_successful %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle me-1"></i>Success
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-times-circle me-1"></i>Failed
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <code class="ip-address">{{ log.ip_address or 'Unknown' }}</code>
+                            </td>
+                            <td>
+                                <div class="device-info">
+                                    {% if log.user_agent %}
+                                        {% if 'Chrome' in log.user_agent %}
+                                            <i class="fab fa-chrome text-warning"></i> Chrome
+                                        {% elif 'Firefox' in log.user_agent %}
+                                            <i class="fab fa-firefox text-orange"></i> Firefox
+                                        {% elif 'Safari' in log.user_agent %}
+                                            <i class="fab fa-safari text-info"></i> Safari
+                                        {% elif 'Edge' in log.user_agent %}
+                                            <i class="fab fa-edge text-primary"></i> Edge
+                                        {% else %}
+                                            <i class="fas fa-globe"></i> Other
+                                        {% endif %}
+                                        
+                                        {% if 'Mobile' in log.user_agent or 'Android' in log.user_agent or 'iPhone' in log.user_agent %}
+                                            <br><small class="text-muted"><i class="fas fa-mobile-alt"></i> Mobile</small>
+                                        {% else %}
+                                            <br><small class="text-muted"><i class="fas fa-desktop"></i> Desktop</small>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">Unknown</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                {% if log.session_duration %}
+                                    <span class="badge bg-info">{{ log.session_duration }}m</span>
+                                {% elif log.logout_time %}
+                                    <span class="text-muted">Calculated</span>
+                                {% elif log.login_successful %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    {% if log.ip_address %}
+                                        <i class="fas fa-map-marker-alt"></i> 
+                                        {% if log.ip_address.startswith('127.') or log.ip_address.startswith('192.168.') %}
+                                            Local
+                                        {% else %}
+                                            Remote
+                                        {% endif %}
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
+                                </small>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                <h4>No login activity found</h4>
+                <p class="text-muted">Login activity will appear here as users access the system.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- User Login Statistics -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-bar me-2"></i>Most Active Users</h5>
+            </div>
+            <div class="card-body">
+                {% if user_login_stats %}
+                    <div class="user-stats-list">
+                        {% for stat in user_login_stats %}
+                        <div class="user-stat-item">
+                            <div class="user-stat-info">
+                                <strong>{{ stat.username }}</strong>
+                                <small class="text-muted d-block">
+                                    Last: {{ stat.last_login.strftime('%m/%d/%Y %I:%M %p') if stat.last_login else 'Never' }}
+                                </small>
+                            </div>
+                            <div class="user-stat-count">
+                                <span class="badge bg-primary">{{ stat.login_count }} logins</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">No user statistics available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5><i class="fas fa-exclamation-circle me-2"></i>Suspicious Activity (24h)</h5>
+            </div>
+            <div class="card-body">
+                {% if suspicious_activity %}
+                    <div class="suspicious-activity-list">
+                        {% for activity in suspicious_activity %}
+                        <div class="suspicious-item">
+                            <div class="activity-info">
+                                <strong class="text-danger">{{ activity.user.username }}</strong>
+                                <small class="text-muted d-block">
+                                    {{ activity.login_time.strftime('%m/%d %I:%M %p') if activity.login_time else 'N/A' }}
+                                </small>
+                            </div>
+                            <div class="activity-details">
+                                <code class="small">{{ activity.ip_address }}</code>
+                                <span class="badge bg-danger ms-2">Failed</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-3">
+                        <i class="fas fa-shield-alt fa-2x text-success mb-2"></i>
+                        <p class="text-success mb-0">No suspicious activity detected</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="dashboard-card">
+    <div class="card-header">
+        <h5><i class="fas fa-tools me-2"></i>Quick Actions</h5>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <a href="{{ url_for('admin_users') }}" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-users me-2"></i>View All Users
+                </a>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-outline-warning w-100" onclick="exportLoginData()">
+                    <i class="fas fa-download me-2"></i>Export Logs
+                </button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-outline-info w-100" onclick="refreshData()">
+                    <i class="fas fa-sync me-2"></i>Refresh Data
+                </button>
+            </div>
+            <div class="col-md-3">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-arrow-left me-2"></i>Back to App
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function refreshData() {
+    location.reload();
+}
+
+function exportLoginData() {
+    // Simple CSV export functionality
+    alert('Export functionality would be implemented here');
+    // You can implement CSV export or integrate with a reporting tool
+}
+
+// Auto-refresh every 5 minutes
+setInterval(function() {
+    if (confirm('Refresh login data?')) {
+        location.reload();
+    }
+}, 300000); // 5 minutes
+</script>
+{% endblock %}
